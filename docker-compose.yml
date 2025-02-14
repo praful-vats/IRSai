@@ -15,7 +15,7 @@ services:
       - backend_network
 
   log_ingestion:
-    build: ./backend/log_service  # ✅ FIXED: Corrected path
+    build: ./backend/log_service
     ports:
       - "8001:8001"
     environment:
