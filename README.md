@@ -18,7 +18,7 @@ IRSai is a **real-time, AI-driven incident detection platform** designed to inge
 ## Tech Stack  
 
 ### **Backend Services**  
-- **Python (FastAPI, Django)** – API services and background processing  
+- **Python (FastAPI)** – API services and background processing  
 - **Kafka** – Distributed log ingestion for real-time streaming  
 - **Celery** – Asynchronous task execution for automated workflows  
 - **PostgreSQL** – Persistent storage for structured incident data  
