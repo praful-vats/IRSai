@@ -15,11 +15,11 @@ services:
       - backend_network
 
   log_ingestion:
-    build: ./backend/services/log_ingestion
+    build: ./backend/log_service  # ✅ FIXED: Corrected path
     ports:
       - "8001:8001"
-    env_file:
-      - ./backend/services/log_ingestion/.env
+    environment:
+      - KAFKA_BROKER=kafka:9092
     depends_on:
       - kafka
       - mongo
