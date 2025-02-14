@@ -1,0 +1,211 @@
+# version: '3.8'
+
+# services:
+#   api_gateway:
+#     build: ./backend/api_gateway
+#     ports:
+#       - "8000:8000"
+#     env_file:
+#       - .env
+#     depends_on:
+#       - redis
+#       - log_ingestion
+#       - incident_detection
+
+#   log_ingestion:
+#     build: ./backend/services/log_ingestion
+#     ports:
+#       - "8001:8001"
+#     env_file:
+#       - .env
+#     depends_on:
+#       - kafka
+
+#   incident_detection:
+#     build: ./backend/services/incident_detection
+#     ports:
+#       - "8002:8002"
+#     env_file:
+#       - .env
+#     depends_on:
+#       - kafka
+#       - redis
+#       - mongo
+    
+#   notification_alerting:
+#     build: ./backend/services/notification_alerting
+#     ports:
+#       - "8003:8003"
+#     env_file:
+#       - ./backend/services/notification_alerting/.env
+#     depends_on:
+#       - redis
+#       - celery_worker
+
+#   redis:
+#     image: "redis:alpine"
+#     ports:
+#       - "6379:6379"
+
+#   celery_worker:
+#     build: ./backend/services/notification_alerting
+#     command: celery -A celery_app worker --loglevel=info
+#     depends_on:
+#       - redis
+#     env_file:
+#       - ./backend/services/notification_alerting/.env
+
+#   mongo:
+#     image: "mongo"
+#     container_name: mongo
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo_data:/data/db
+
+#   kafka:
+#     image: "bitnami/kafka:latest"
+#     container_name: kafka
+#     ports:
+#       - "9092:9092"
+#     environment:
+#       - KAFKA_BROKER_ID=1
+#       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+#       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+#     depends_on:
+#       - zookeeper
+
+#   zookeeper:
+#     image: "bitnami/zookeeper:latest"
+#     container_name: zookeeper
+#     ports:
+#       - "2181:2181"
+#     environment:
+#       - ALLOW_ANONYMOUS_LOGIN=yes
+
+# volumes:
+#   mongo_data:
+#     driver: local
+
+
+
+
+
+
+
+
+
+
+
+version: '3.8'
+
+services:
+  api_gateway:
+    build: ./backend/api_gateway
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/api_gateway/.env
+    depends_on:
+      - redis
+      - log_ingestion
+      - incident_detection
+    networks:
+      - backend_network
+
+  log_ingestion:
+    build: ./backend/services/log_ingestion
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./backend/services/log_ingestion/.env
+    depends_on:
+      - kafka
+      - mongo
+    networks:
+      - backend_network
+
+  incident_detection:
+    build: ./backend/services/incident_detection
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./backend/services/incident_detection/.env
+    depends_on:
+      - kafka
+      - redis
+      - mongo
+    networks:
+      - backend_network
+
+  notification_alerting:
+    build: ./backend/services/notification_alerting
+    ports:
+      - "8003:8003"
+    env_file:
+      - ./backend/services/notification_alerting/.env
+    depends_on:
+      - redis
+      - celery_worker
+    networks:
+      - backend_network
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - backend_network
+
+  celery_worker:
+    build: ./backend/services/notification_alerting
+    command: celery -A celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    env_file:
+      - ./backend/services/notification_alerting/.env
+    networks:
+      - backend_network
+
+  mongo:
+    image: "mongo"
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend_network
+
+  kafka:
+    image: "bitnami/kafka:latest"
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+    networks:
+      - backend_network
+
+  zookeeper:
+    image: "bitnami/zookeeper:latest"
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - backend_network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  backend_network:
+    driver: bridge

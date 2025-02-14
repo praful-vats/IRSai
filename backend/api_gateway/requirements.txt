@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+requests
+httpx
+dotenv
+redis
+celery
+pydantic
+logging

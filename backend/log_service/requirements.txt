@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+alembic
+redis
+celery
+pydantic
+dotenv
+httpx
