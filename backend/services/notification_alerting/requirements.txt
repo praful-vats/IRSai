@@ -7,3 +7,5 @@ celery
 redis
 smtplib
 email
+uvicorn
+redis
