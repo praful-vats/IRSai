@@ -1,3 +1,4 @@
+setuptools
 fastapi
 uvicorn
 pydantic
@@ -5,7 +6,5 @@ requests
 python-dotenv
 celery
 redis
-smtplib
-email
 uvicorn
 redis

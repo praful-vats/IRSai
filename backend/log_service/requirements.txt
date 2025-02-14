@@ -5,5 +5,5 @@ alembic
 redis
 celery
 pydantic
-dotenv
+python-dotenv
 httpx

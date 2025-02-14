@@ -2,8 +2,7 @@ fastapi
 uvicorn
 requests
 httpx
-dotenv
+python-dotenv
 redis
 celery
 pydantic
-logging
